@@ -1,0 +1,4 @@
+node_modules/
+# Built by `npm run build` (GitHub Actions builds its own copy).
+/index.html
+_site/
