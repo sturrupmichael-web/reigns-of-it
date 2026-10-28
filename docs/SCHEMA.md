@@ -61,6 +61,7 @@ browser console while you play `dev.html`.
 | `label` | The answer, 2-5 words, shown at the top of the card as you drag toward that side. |
 | `effects` | How much each meter moves: any of `budget`, `security`, `happiness`, `patience`. Leave out a meter to leave it alone. Before the player commits, every meter in here shows a dot: small for 1-6, medium for 7-12, large for 13+ (set in `config.js`). The dot never says which direction. |
 | `flags` | Optional. Things to remember for the rest of the run: `{ name: value }`. Use `true` to set and `false` to clear. Any value works; conditions treat anything except `false`, `0`, `''`, `null` and `undefined` as set. |
+| `add` | Optional. Adds to counters: `{ cfo_grudge: 1 }`, or a negative number to take away. A counter starts at 0. Use counters for things that build up over a run, like a grudge, a favor owed, or how many shortcuts you've taken. |
 | `followUp` | Optional. A card to show later, by id. `'card_id'` (or `{ card: 'card_id', delay: 0 }`) shows it next. `{ card: 'card_id', delay: 3 }` shows it after three other cards, i.e. three weeks later. |
 | `ending` | Optional. End the run right now with this ending id (a key from `data/endings.js`), for special story endings. |
 
@@ -88,6 +89,17 @@ All the parts you include must be true for the card to be eligible.
 | `minYear: 2`, `maxYear: 5` | the year of your tenure (Year 1 is the first 52 weeks) |
 | `weeks: [40, 52]` | the week of the year, 1-52, for seasonal cards. A window that wraps, like `[50, 4]`, covers late December to January. |
 | `meters: { budget: { max: 30 }, security: { min: 60 } }` | meter ranges, e.g. only when money is tight |
+| `counters: { cfo_grudge: { min: 2 } }` | counter ranges (a counter that was never added to is 0) |
+
+## Characters remember
+
+There are two ways to make a character hold a choice against the player (or thank them
+for it). For a specific callback, set a flag and queue a `followUp` with a delay: the CFO
+comes back four weeks after you kill her reporting tool. For a slow build, add to a
+counter on every slight and give a card `conditions: { counters: { ... } }`: two CFO
+grudges unlock her expense audit, and three unlock her attempt to take over IT.
+
+## Follow-ups and conditions
 
 Follow-ups skip the random draw but still check their conditions when their turn comes.
 If the conditions fail then (say the player cleared the flag in the meantime), the
@@ -139,7 +151,22 @@ security_max: {
 
 A meter hitting 0 shows `<meter>_min`, and hitting 100 shows `<meter>_max`, so all
 eight of those must exist. Any other id is a special ending, triggered by a choice's
-`ending` field.
+`ending` field. For example, the CFO's last card:
+
+```js
+{
+  id: 'cfo_final_straw',
+  character: 'cfo',
+  text: 'I\'ve proposed moving IT under Finance. ...',
+  left: { label: 'Apologize. Publicly.', effects: { patience: -10, happiness: -5 }, add: { cfo_grudge: -3 } },
+  right: { label: 'Go over her head', ending: 'cfo_takeover' },
+  conditions: { counters: { cfo_grudge: { min: 3 } } },
+  weight: 3,
+  once: true,
+}
+```
+
+The game over screen counts how many of all the endings the player has found.
 
 ## Config
 

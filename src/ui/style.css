@@ -66,7 +66,10 @@ html, body {
   overscroll-behavior: none;
 }
 
-body { overflow: hidden; }
+/* The flying card must not make the page scrollable: html stops body's overflow
+   reaching the viewport, and body clips without being a scroll container. */
+html { overflow: hidden; }
+body { overflow: clip; }
 
 button { font: inherit; color: inherit; }
 
@@ -183,12 +186,36 @@ button { font: inherit; color: inherit; }
 
 .status {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 8px;
   font-size: 13px;
   font-weight: 700;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
+}
+
+/* New-year banner, over the top of the card. */
+.toast {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: var(--panel);
+  font-weight: 800;
+  font-size: 15px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show { animation: toast 1.8s ease both; }
+@keyframes toast {
+  0% { opacity: 0; transform: translate(-50%, -8px); }
+  12%, 80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -4px); }
 }
 
 /* ── Stage: prompt, card, speaker ─────────────────────────────────────── */
@@ -398,7 +425,10 @@ button { font: inherit; color: inherit; }
 }
 .end-title { margin: 0 0 10px; font-size: 28px; line-height: 1.1; }
 .end-text { margin: 0 0 14px; font-size: 16px; line-height: 1.45; }
-.end-stats { margin: 0 0 20px; font-size: 14px; color: var(--ink-soft); font-weight: 600; }
+.end-stats { margin: 0 0 6px; font-size: 14px; color: var(--ink-soft); font-weight: 600; }
+
+.end-record { margin: 0 0 20px; font-size: 14px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 2px; }
+.end-record .highlight { color: var(--up); font-weight: 700; }
 
 .primary-btn {
   width: 100%;

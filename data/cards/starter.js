@@ -1,5 +1,5 @@
 /*
- * CARDS: starter set (Phase 1)
+ * CARDS: starter set
  * ============================
  * Full reference: docs/SCHEMA.md. Quick version:
  *
@@ -13,6 +13,7 @@
  *     effects: { happiness: -10, patience: -5 },   // any of budget, security,
  *                                                  // happiness, patience
  *     flags: { some_flag: true },  // optional: remember this choice
+ *     add: { cfo_grudge: 1 },      // optional: add to a counter (starts at 0)
  *     followUp: 'card_id',         // optional: this card comes next, or
  *     followUp: { card: 'card_id', delay: 3 },     // ...comes 3 weeks later
  *     ending: 'ending_id',         // optional: end the run right here
@@ -26,6 +27,7 @@
  *     minYear: 2, maxYear: 5,      // which years of your tenure (1 = first)
  *     weeks: [40, 52],             // week-of-year window (1-52), for seasons
  *     meters: { budget: { max: 30 } },  // meter ranges, e.g. only when broke
+ *     counters: { cfo_grudge: { min: 2 } }, // counter ranges
  *   },
  *   weight: 1,                     // how common: 2 = twice as likely, 0.5 = half
  *   once: true,                    // at most once per run
@@ -79,7 +81,7 @@ export const CARDS = [
     id: 'cfo_cut_backups',
     character: 'cfo',
     text: 'We need to cut 10% from IT. I was looking at backup storage. When was the last time anyone actually used a backup?',
-    left: { label: 'Over my dead body', effects: { budget: -10, patience: -5, security: 5 } },
+    left: { label: 'Over my dead body', effects: { budget: -10, patience: -5, security: 5 }, add: { cfo_grudge: 1 } },
     right: { label: 'Trim the backups', effects: { budget: 15, security: -15 } },
   },
   {
@@ -90,6 +92,7 @@ export const CARDS = [
       label: 'Shut it down',
       effects: { security: 10, happiness: -10 },
       flags: { killed_cfo_tool: true },
+      add: { cfo_grudge: 1 },
       followUp: { card: 'cfo_petty_revenge', delay: 4 },
     },
     right: { label: 'Fine, integrate it', effects: { security: -10, budget: -5, happiness: 10 } },
@@ -99,10 +102,29 @@ export const CARDS = [
     id: 'cfo_petty_revenge',
     character: 'cfo',
     text: 'Your software renewal request? Funny thing. It got lost. Much like my reporting tool.',
-    left: { label: 'Escalate to the CIO', effects: { budget: 5, patience: -10 } },
+    left: { label: 'Escalate to the CIO', effects: { budget: 5, patience: -10 }, add: { cfo_grudge: 1 } },
     right: { label: 'Eat the cost', effects: { budget: -15, happiness: 5 } },
     conditions: { requires: ['killed_cfo_tool'] },
     followUpOnly: true,
+    once: true,
+  },
+  {
+    id: 'cfo_expense_audit',
+    character: 'cfo',
+    text: 'I\'m reviewing IT\'s expenses. Line by line. Who approved a $40 "cable organizer"? It\'s a box of zip ties.',
+    left: { label: 'Bring receipts', effects: { patience: -5, happiness: -5 }, add: { cfo_grudge: -1 } },
+    right: { label: 'It was a good box', effects: { budget: -10, happiness: 5 }, add: { cfo_grudge: 1 } },
+    conditions: { counters: { cfo_grudge: { min: 2 } } },
+    once: true,
+  },
+  {
+    id: 'cfo_final_straw',
+    character: 'cfo',
+    text: 'I\'ve proposed moving IT under Finance. For efficiency. The board votes Friday. Anything you\'d like to say?',
+    left: { label: 'Apologize. Publicly.', effects: { patience: -10, happiness: -5 }, add: { cfo_grudge: -3 } },
+    right: { label: 'Go over her head', ending: 'cfo_takeover' },
+    conditions: { counters: { cfo_grudge: { min: 3 } } },
+    weight: 3,
     once: true,
   },
 

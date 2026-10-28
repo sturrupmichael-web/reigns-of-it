@@ -26,6 +26,9 @@ function load() {
       for (const k of Object.keys(c.effects ?? {})) {
         if (!METER_KEYS.includes(k)) problems.push(`card "${card.id}": ${side} effect on unknown meter "${k}"`);
       }
+      for (const [k, n] of Object.entries(c.add ?? {})) {
+        if (typeof n !== 'number') problems.push(`card "${card.id}": ${side} adds a non-number to counter "${k}"`);
+      }
       const fu = typeof c.followUp === 'string' ? c.followUp : c.followUp?.card;
       if (fu && !cardById[fu]) problems.push(`card "${card.id}": ${side} follows up with unknown card "${fu}"`);
       if (c.ending && !ENDINGS[c.ending]) problems.push(`card "${card.id}": ${side} ends with unknown ending "${c.ending}"`);

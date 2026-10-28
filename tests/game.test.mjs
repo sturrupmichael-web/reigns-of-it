@@ -82,6 +82,15 @@ export const tests = [
     await page.waitForFunction(() => reigns.game.state.turn === 3);
   }],
 
+  ['a new year gets a banner', async (page) => {
+    await ready(page);
+    await page.evaluate(() => { reigns.game.state.turn = 51; });
+    await page.evaluate(() => reigns.choose('left'));
+    await page.waitForSelector('#toast.show');
+    assert((await page.textContent('#toast')) === 'Year 2', await page.textContent('#toast'));
+    assert((await page.textContent('#clock')) === 'Year 2, Week 1', await page.textContent('#clock'));
+  }],
+
   ['a run ends on the game over screen, and a new one starts from it', async (page) => {
     for (let i = 0; i < 300 && !(await page.evaluate(() => reigns.game.state.ended)); i++) {
       await ready(page);

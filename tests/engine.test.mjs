@@ -1,11 +1,11 @@
 // The engine and the content, without a browser: the data loads cleanly, choices move the
-// meters, flags and follow-ups work, every meter bound has its ending, and random runs
-// always end without running out of cards.
+// meters, flags, counters and follow-ups work, every meter bound has its ending, saved runs
+// resume, and random runs always end without running out of cards.
 
 import { assert } from './harness.mjs';
 import { CONTENT, METER_KEYS } from '../src/content.js';
 import { newRun, applyChoice, calendar } from '../src/engine/state.js';
-import { drawCard } from '../src/engine/deck.js';
+import { drawCard, conditionsMet } from '../src/engine/deck.js';
 import { createGame } from '../src/engine/game.js';
 
 // A repeatable random number generator, so a failing run can be replayed.
@@ -77,6 +77,46 @@ export const tests = [
       const card = drawCard(state, seeded(i + 7));
       assert(!card.followUpOnly, `${card.id} came up at random`);
       state.turn++;
+    }
+  }],
+
+  ['counters add up, and gate cards by range', async () => {
+    const state = newRun();
+    const card = { id: 't', left: { label: 'x', add: { grudge: 2 } }, right: { label: 'y', add: { grudge: -1 } } };
+    applyChoice(state, card, 'left');
+    applyChoice(state, card, 'right');
+    assert(state.flags.grudge === 1, `grudge is ${state.flags.grudge}`);
+    const gated = { id: 'g', conditions: { counters: { grudge: { min: 2 } } } };
+    assert(!conditionsMet(gated, state), 'card shown below its counter minimum');
+    applyChoice(state, card, 'left');
+    assert(conditionsMet(gated, state), 'card hidden at its counter minimum');
+    assert(conditionsMet({ id: 'n', conditions: { counters: { never_set: { max: 0 } } } }, state), 'a missing counter should count as 0');
+  }],
+
+  ['three CFO grudges unlock her final card, which can end the run with a special ending', async () => {
+    const state = newRun();
+    const finalStraw = CONTENT.cardById.cfo_final_straw;
+    assert(!conditionsMet(finalStraw, state), 'final straw available from the start');
+    applyChoice(state, CONTENT.cardById.cfo_cut_backups, 'left');
+    applyChoice(state, CONTENT.cardById.cfo_shadow_saas, 'left');
+    applyChoice(state, CONTENT.cardById.cfo_petty_revenge, 'left');
+    assert(conditionsMet(finalStraw, state), `final straw still locked at grudge ${state.flags.cfo_grudge}`);
+    const r = applyChoice(state, finalStraw, 'right');
+    assert(r.ending === 'cfo_takeover' && CONTENT.endings.cfo_takeover, `ending was ${r.ending}`);
+  }],
+
+  ['a saved run resumes exactly where it was, and bad saves are ignored', async () => {
+    const rng = seeded(42);
+    const a = createGame(rng);
+    a.start();
+    for (let i = 0; i < 5; i++) a.choose(i % 2 ? 'left' : 'right');
+    const saved = JSON.parse(JSON.stringify(a.snapshot()));
+    const b = createGame(seeded(1));
+    const card = b.resume(saved);
+    assert(card && card.id === a.card.id, 'resumed on a different card');
+    assert(JSON.stringify(b.state) === JSON.stringify(a.state), 'resumed state differs');
+    for (const bad of [null, {}, { ...saved, v: 0 }, { ...saved, card: 'no_such_card' }, { ...saved, state: { ...saved.state, meters: {} } }]) {
+      assert(createGame().resume(bad) === null, `accepted a bad save: ${JSON.stringify(bad)?.slice(0, 60)}`);
     }
   }],
 

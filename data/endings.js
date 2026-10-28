@@ -3,7 +3,7 @@
  * =======
  * A run ends when any meter hits 0 or 100. The ending shown is looked up by
  * `<meter>_min` (hit 0) or `<meter>_max` (hit 100), so all 8 of these must
- * exist. Special story endings (Phase 2+) use any other id and are triggered
+ * exist. Special story endings use any other id and are triggered
  * by a card choice with `ending: '<id>'`.
  *
  * Fields:
@@ -51,5 +51,12 @@ export const ENDINGS = {
     icon: '🪑',
     title: 'Promoted Out',
     text: 'The CIO trusts you so completely that he retires and hands you his job. You now attend eleven meetings a day and never touch a server again.',
+  },
+
+  // ── Special endings (triggered by a card choice's `ending`) ──────────────
+  cfo_takeover: {
+    icon: '📊',
+    title: 'Restructured',
+    text: 'You went over the CFO\'s head. She was waiting there. IT now reports to Finance, and your new title is Associate Spreadsheet Liaison.',
   },
 };
