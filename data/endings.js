@@ -59,4 +59,19 @@ export const ENDINGS = {
     title: 'Restructured',
     text: 'You went over the CFO\'s head. She was waiting there. IT now reports to Finance, and your new title is Associate Spreadsheet Liaison.',
   },
+  consultant_takeover: {
+    icon: '🧑‍💼',
+    title: 'Synergized',
+    text: 'Trent\'s new org chart has a box where you used to be. It says "Platform Excellence (Trent)". He sends you a calendar invite to your own exit interview.',
+  },
+  ransomware_ending: {
+    icon: '🔐',
+    title: 'Encrypted',
+    text: 'The backups were encrypted too, because they were on the same network, because that was cheaper. The ransom note has better grammar than your incident report.',
+  },
+  ai_ending: {
+    icon: '🤖',
+    title: 'Automated',
+    text: 'The AI agent now runs IT for $49 a month. Ticket satisfaction is up 300%. It closes your offboarding ticket in four seconds and marks it "resolved".',
+  },
 };

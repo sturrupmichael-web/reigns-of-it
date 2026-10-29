@@ -83,4 +83,52 @@ export const CHARACTERS = {
     bio: 'Polite. Thorough. Brings his own highlighter. Has never been surprised.',
     portrait: { bg: '#adb5bd', skin: '#f0d0b8', hair: 'bald', hairColor: '#000000', shirt: '#2d2d2d', extras: ['glasses', 'bowtie', 'mustache'], mouth: 'flat' },
   },
+  hr: {
+    name: 'Linda Park',
+    title: 'HR Director',
+    bio: 'Warm, organized, and terrifying in a meeting. Needs every new hire to have a laptop yesterday.',
+    portrait: { bg: '#e5989b', skin: '#e9b896', hair: 'bun', hairColor: '#2b1d14', shirt: '#6d597a', extras: ['earrings'], mouth: 'smile' },
+  },
+  marketing: {
+    name: 'Skyler Voss',
+    title: 'VP of Marketing',
+    bio: 'Has signed up for every SaaS free trial ever made. Thinks a firewall is a brand guideline.',
+    portrait: { bg: '#ff70a6', skin: '#f2c6a0', hair: 'spiky', hairColor: '#7b2cbf', shirt: '#22223b', extras: ['shades'], mouth: 'grin' },
+  },
+  dev_lead: {
+    name: 'Raj Malhotra',
+    title: 'Lead Developer',
+    bio: 'Brilliant. Wants production access, a faster laptop, and for nobody to ever ask for an estimate.',
+    portrait: { bg: '#4361ee', skin: '#a8714f', hair: 'short', hairColor: '#111111', shirt: '#3a0ca3', extras: ['hoodie', 'glasses'], mouth: 'flat' },
+  },
+  facilities: {
+    name: 'Dale Kowalski',
+    title: 'Facilities Manager',
+    bio: 'Controls the thermostat, the badge readers and the server room door. Considers all three his.',
+    portrait: { bg: '#bc6c25', skin: '#e2b48c', hair: 'balding', hairColor: '#8a7560', shirt: '#606c38', extras: ['mustache', 'lanyard'], mouth: 'flat' },
+  },
+  legal: {
+    name: 'Harriet Wu',
+    title: 'General Counsel',
+    bio: 'Reads every license agreement. All of them. Has opinions about the word "perpetual".',
+    portrait: { bg: '#335c67', skin: '#f0cfae', hair: 'short', hairColor: '#1b1b1b', shirt: '#14213d', extras: ['glasses', 'pearls'], mouth: 'flat' },
+  },
+  ciso: {
+    name: 'Morgan Reyes',
+    title: 'Chief Information Security Officer',
+    bio: 'Hired after the incident. Sees every request as an attack surface, including yours.',
+    portrait: { bg: '#370617', skin: '#c68e6a', hair: 'short', hairColor: '#4a3426', shirt: '#111111', extras: ['shades'], mouth: 'flat' },
+  },
+  consultant: {
+    name: 'Trent Whitfield',
+    title: 'Transformation Consultant',
+    bio: 'Brought in by the board after the merger. Bills by the slide. Says "synergy" without irony.',
+    portrait: { bg: '#a3b18a', skin: '#f5d0b0', hair: 'slick', hairColor: '#c9a227', shirt: '#283618', extras: ['tie'], mouth: 'grin' },
+  },
+  acquired_it: {
+    name: 'Bea Lindqvist',
+    title: 'IT Lead, the acquired company',
+    bio: 'Ran IT for the company you just bought, alone, for nine years. Knows where the Ohio closet is.',
+    portrait: { bg: '#90be6d', skin: '#f3d3bd', hair: 'ponytail', hairColor: '#e9c46a', shirt: '#2a9d8f', extras: ['glasses', 'lanyard'], mouth: 'smile' },
+  },
 };

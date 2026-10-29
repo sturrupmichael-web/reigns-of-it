@@ -5,9 +5,10 @@ company, and every card is a request, a crisis or a decision from someone in the
 Swipe left or right to choose. Every choice moves four meters: 💰 Budget, 🛡️ Security,
 🙂 User Happiness and 👔 CIO Patience. Let any of them hit 0 or 100 and your tenure ends.
 
-Phases 1 and 2 of 5: the swipe card, the four meters, about twenty cards, flags,
-counters and follow-ups so characters remember what you did, the week and year clock,
-all eight meter endings plus a special one, saving, and your best score. See [docs/SCHEMA.md](docs/SCHEMA.md) for how cards, characters and endings are
+Phases 1-3 of 5: the swipe card and four meters, 104 cards from 18 characters, five
+story arcs (the Merger, a Ransomware Scare, the Cloud Migration, the Audit and AI
+Everything), seasonal cards, characters who remember what you did, the week and year
+clock, all eight meter endings plus four special ones, saving, and your best score. See [docs/SCHEMA.md](docs/SCHEMA.md) for how cards, characters and endings are
 written.
 
 ```
@@ -16,6 +17,7 @@ index.html        the built page (npm run build), one self-contained file; not i
 data/             the content: cards, characters, endings, tuning numbers
 src/              the game: engine/ (rules, no DOM), ui/, audio/, main.js
 docs/SCHEMA.md    how to write cards, characters and endings
+scripts/          npm run balance: plays thousands of runs and reports on them
 build.mjs         builds index.html
 tests/            npm test
 ```
@@ -64,6 +66,7 @@ blocked (some private windows), the game still plays; it just doesn't remember.
 npm run lint
 npm run build
 npm test                 # npm test -- node skips the browser tests
+npm run balance          # run lengths, ending spread, cards never seen
 ```
 
 The tests check the content for broken references, play the engine through hundreds of

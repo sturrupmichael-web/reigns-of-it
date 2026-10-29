@@ -105,6 +105,27 @@ export const tests = [
     assert(r.ending === 'cfo_takeover' && CONTENT.endings.cfo_takeover, `ending was ${r.ending}`);
   }],
 
+  ['the audit only raises the findings you earned', async () => {
+    // Draw cards until the audit's queued follow-ups have all come due.
+    const auditCards = (setup) => {
+      const state = newRun();
+      setup(state);
+      applyChoice(state, CONTENT.cardById.audit_kickoff, 'right');
+      const shown = [];
+      for (let i = 0; i < 8; i++) {
+        const card = drawCard(state, seeded(i + 3));
+        if (card.id.startsWith('audit_')) shown.push(card.id);
+        applyChoice(state, card, 'left');
+        state.meters = Object.fromEntries(METER_KEYS.map((k) => [k, 50]));
+      }
+      return shown.sort().join(',');
+    };
+    const clean = auditCards(() => {});
+    assert(clean === 'audit_clean', `clean run got ${clean}`);
+    const messy = auditCards((s) => { s.flags.sales_vp_admin = true; s.flags.security_debt = 4; });
+    assert(messy === 'audit_debt,audit_sales_admin', `messy run got ${messy}`);
+  }],
+
   ['a saved run resumes exactly where it was, and bad saves are ignored', async () => {
     const rng = seeded(42);
     const a = createGame(rng);

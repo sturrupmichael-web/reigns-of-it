@@ -7,6 +7,7 @@ import { CONFIG, METERS } from '../data/config.js';
 import { CHARACTERS } from '../data/characters.js';
 import { ENDINGS } from '../data/endings.js';
 import { ALL_CARDS } from '../data/cards/index.js';
+import { followUpsOf } from './engine/state.js';
 
 export const METER_KEYS = METERS.map((m) => m.key);
 
@@ -29,9 +30,22 @@ function load() {
       for (const [k, n] of Object.entries(c.add ?? {})) {
         if (typeof n !== 'number') problems.push(`card "${card.id}": ${side} adds a non-number to counter "${k}"`);
       }
-      const fu = typeof c.followUp === 'string' ? c.followUp : c.followUp?.card;
-      if (fu && !cardById[fu]) problems.push(`card "${card.id}": ${side} follows up with unknown card "${fu}"`);
+      for (const fu of followUpsOf(c)) {
+        if (!cardById[fu.card]) problems.push(`card "${card.id}": ${side} follows up with unknown card "${fu.card}"`);
+      }
       if (c.ending && !ENDINGS[c.ending]) problems.push(`card "${card.id}": ${side} ends with unknown ending "${c.ending}"`);
+    }
+  }
+  // A flag or counter that a condition checks but no choice ever sets is almost
+  // always a typo, and the card behind it can never (or always) appear.
+  const set = new Set();
+  for (const card of Object.values(cardById)) {
+    for (const side of ['left', 'right']) for (const k of [...Object.keys(card[side]?.flags ?? {}), ...Object.keys(card[side]?.add ?? {})]) set.add(k);
+  }
+  for (const card of Object.values(cardById)) {
+    const c = card.conditions ?? {};
+    for (const k of [...(c.requires ?? []), ...(c.excludes ?? []), ...Object.keys(c.counters ?? {})]) {
+      if (!set.has(k)) problems.push(`card "${card.id}": checks flag "${k}", which no choice sets`);
     }
   }
   if (CONFIG.startCard && !cardById[CONFIG.startCard]) problems.push(`config.startCard "${CONFIG.startCard}" is not a card`);

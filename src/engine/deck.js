@@ -17,6 +17,8 @@ export function conditionsMet(card, state) {
 
   if (c.requires && !c.requires.every((f) => !!state.flags[f])) return false;
   if (c.excludes && c.excludes.some((f) => !!state.flags[f])) return false;
+  if (c.tenure?.min != null && state.turn < c.tenure.min) return false;
+  if (c.tenure?.max != null && state.turn > c.tenure.max) return false;
   if (c.minYear != null && cal.year < c.minYear) return false;
   if (c.maxYear != null && cal.year > c.maxYear) return false;
   if (c.weeks) {
