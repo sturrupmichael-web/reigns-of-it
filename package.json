@@ -1,0 +1,19 @@
+{
+  "name": "reigns-of-it",
+  "private": true,
+  "type": "module",
+  "description": "Reigns of IT, a Reigns-style swipe card game about being the new IT Director. No runtime dependencies (esbuild, Playwright and ESLint are for building, testing and checking).",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "build": "node build.mjs",
+    "test": "node tests/run.mjs",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "esbuild": "0.28.2",
+    "eslint": "10.12.0",
+    "globals": "17.12.0",
+    "playwright": "1.56.1"
+  }
+}

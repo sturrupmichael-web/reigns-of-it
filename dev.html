@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Reigns of IT</title>
+  <meta name="description" content="Swipe left or right as the new IT Director. Keep Budget, Security, User Happiness and CIO Patience balanced for as long as you can.">
+  <meta property="og:title" content="Reigns of IT">
+  <meta property="og:description" content="A swipe card game about surviving as the new IT Director.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1f2433">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect x=%2218%22 y=%2210%22 width=%2264%22 height=%2280%22 rx=%2210%22 fill=%22%231f2433%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2244%22 text-anchor=%22middle%22%3E%F0%9F%91%94%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="src/ui/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="hud">
+      <div class="meters" id="meters" aria-label="Meters"></div>
+      <div class="status">
+        <span class="clock" id="clock">Year 1, Week 1</span>
+      </div>
+    </header>
+
+    <main class="stage">
+      <p class="prompt" id="prompt" aria-live="polite"></p>
+
+      <div class="card-area">
+        <div class="card-deck" aria-hidden="true"></div>
+        <div class="card" id="card" aria-roledescription="swipe card">
+          <div class="card-face" id="card-face"></div>
+          <div class="card-choice left" id="choice-left"><span id="label-left"></span></div>
+          <div class="card-choice right" id="choice-right"><span id="label-right"></span></div>
+        </div>
+      </div>
+
+      <div class="who">
+        <span class="who-name" id="char-name"></span>
+        <span class="who-title" id="char-title"></span>
+      </div>
+    </main>
+
+    <footer class="controls">
+      <button class="choice-btn" id="btn-left" type="button" aria-label="Choose left"><span aria-hidden="true">←</span></button>
+      <span class="hint">Swipe, or use ← →</span>
+      <button class="choice-btn" id="btn-right" type="button" aria-label="Choose right"><span aria-hidden="true">→</span></button>
+    </footer>
+  </div>
+
+  <div class="overlay" id="gameover" hidden role="dialog" aria-modal="true" aria-labelledby="end-title">
+    <div class="overlay-panel">
+      <div class="end-icon" id="end-icon" aria-hidden="true"></div>
+      <p class="end-kicker">Your tenure has ended</p>
+      <h1 class="end-title" id="end-title"></h1>
+      <p class="end-text" id="end-text"></p>
+      <p class="end-stats" id="end-stats"></p>
+      <button class="primary-btn" id="btn-restart" type="button">Hire the next IT Director</button>
+    </div>
+  </div>
+
+  <div id="boot">Loading...</div>
+  <script>
+    // Shows load errors on the page instead of a blank screen (main.js removes #boot once running).
+    addEventListener('error', (e) => {
+      const b = document.getElementById('boot');
+      if (b) b.textContent = 'The game failed to load: ' + (e.message || (e.target && (e.target.src || e.target.href)) || 'unknown error');
+    }, true);
+    addEventListener('unhandledrejection', (e) => {
+      const b = document.getElementById('boot');
+      if (b) b.textContent = 'The game failed to load: ' + (e.reason && e.reason.message || e.reason);
+    });
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
