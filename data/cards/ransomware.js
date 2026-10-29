@@ -124,7 +124,7 @@ export const CARDS = [
     character: 'ceo',
     text: 'The board wants a Chief Information Security Officer. Her name is Morgan. She\'ll share your budget. And your office.',
     left: { label: 'Welcome, Morgan', effects: { budget: -5, security: 10, patience: 5 }, flags: { ciso_hired: true } },
-    right: { label: 'I can handle security', effects: { patience: -10, budget: 5 }, flags: { ciso_hired: true }, add: { ciso_friction: 1 } },
+    right: { label: 'I can handle security', effects: { patience: -10, budget: 5 }, flags: { ciso_hired: true }, add: { ciso_friction: 1, ceo_no: 1 } },
     followUpOnly: true,
     once: true,
   },

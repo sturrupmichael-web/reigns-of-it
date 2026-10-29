@@ -10,5 +10,6 @@ import { CARDS as RANSOMWARE } from './ransomware.js';
 import { CARDS as CLOUD } from './cloud.js';
 import { CARDS as AUDIT } from './audit.js';
 import { CARDS as AI } from './ai.js';
+import { CARDS as LEGACY } from './legacy.js';
 
-export const ALL_CARDS = [...STARTER, ...OFFICE, ...SEASONAL, ...MERGER, ...RANSOMWARE, ...CLOUD, ...AUDIT, ...AI];
+export const ALL_CARDS = [...STARTER, ...OFFICE, ...SEASONAL, ...MERGER, ...RANSOMWARE, ...CLOUD, ...AUDIT, ...AI, ...LEGACY];

@@ -34,7 +34,8 @@ function serve() {
 
 // Opens `file` (e.g. dev.html) on a phone-sized touch screen and passes a Playwright page
 // to `fn`. Console errors and page errors are collected on page.errors.
-export async function withPage(file, fn, viewport = { width: 390, height: 844 }) {
+// Tests begin past the title screen, unless the test file sets `title: true`.
+export async function withPage(file, fn, viewport = { width: 390, height: 844 }, opts = {}) {
   const { chromium } = await import('playwright');
   const fromDisk = file.startsWith('file:');
   const server = fromDisk ? null : await serve();
@@ -46,11 +47,19 @@ export async function withPage(file, fn, viewport = { width: 390, height: 844 })
     page.on('pageerror', (e) => page.errors.push(e.message));
     await page.goto(fromDisk ? new URL(`../${file.slice(5)}`, import.meta.url).href : `http://localhost:${server.address().port}${BASE}${file}`);
     await page.waitForFunction(() => window.reigns && !document.getElementById('boot'), null, { timeout: 15000 });
+    if (!opts.title) await startFromTitle(page);
     await fn(page);
   } finally {
     await browser.close();
     server?.close();
   }
+}
+
+// Taps Start (or Continue) on the title screen.
+export async function startFromTitle(page) {
+  await page.waitForSelector('#title.show');
+  await page.click('#btn-play');
+  await page.waitForSelector('#title', { state: 'hidden' });
 }
 
 export function assert(cond, msg) {

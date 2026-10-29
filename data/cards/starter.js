@@ -172,7 +172,7 @@ export const CARDS = [
     id: 'ceo_macs',
     character: 'ceo',
     text: 'My nephew says everyone should be on Macs. He\'s very smart. Can we switch the whole company by Monday?',
-    left: { label: 'Let me write a proposal', effects: { patience: -10, budget: 5 } },
+    left: { label: 'Let me write a proposal', effects: { patience: -10, budget: 5 }, add: { ceo_no: 1 } },
     right: { label: 'Of course!', effects: { budget: -15, happiness: 10, security: -5 } },
   },
   {

@@ -57,7 +57,7 @@ export const CARDS = [
     character: 'intern',
     text: 'I wrote a script to automate the onboarding spreadsheet! It also emailed the spreadsheet to everyone. Including the salaries tab.',
     left: { label: 'Recall it, apologize', effects: { happiness: -10, patience: -5, budget: 5 } },
-    right: { label: 'Hire him', effects: { budget: -5, happiness: 10, security: -5 } },
+    right: { label: 'Hire him', effects: { budget: -5, happiness: 10, security: -5 }, flags: { hired_tyler: true } },
     conditions: { weeks: [22, 38] },
     once: true,
   },
