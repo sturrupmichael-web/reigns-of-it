@@ -139,7 +139,7 @@ export const CARDS = [
     character: 'consultant',
     text: 'In my new org chart, IT reports to me. Temporarily. For about three years. The board loves it. Any objections?',
     left: { label: 'Accept it gracefully', effects: { patience: -15, happiness: -5 }, add: { trent_annoyed: -2 } },
-    right: { label: 'Fight it in the board meeting', ending: 'consultant_takeover' },
+    right: { label: 'Fight it at the board', ending: 'consultant_takeover' },
     conditions: { requires: ['consultant_on'], counters: { trent_annoyed: { min: 2 } } },
     weight: 3,
     once: true,

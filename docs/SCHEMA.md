@@ -9,18 +9,21 @@ data/
   config.js        meters (names, icons) and tuning numbers
   characters.js    who says each card, and how their portrait is drawn
   endings.js       the text for each way a run can end
+  achievements.js  achievements, and what they unlock
+  directors.js     name lists for "IT Director #N"
   cards/
     index.js       the list of card files (add new files here)
-    starter.js     the Phase 1 cards
+    *.js           the cards (see "Card files" below)
 ```
 
 The data files are JavaScript rather than JSON so you can write comments, leave trailing
 commas, and use either quote style. Each file exports one object or list.
 
-When you change anything here, run `npm test`. The first test checks the content for
-duplicate ids, cards that name a character or follow-up that doesn't exist, effects on a
-meter that doesn't exist, and missing endings. The same problems are also logged to the
-browser console while you play `dev.html`.
+When you change anything here, run `npm run validate` (or open `validator.html`). It
+reports broken references, missing or misspelled fields, impossible conditions, cards
+that can never appear, and meter balance. The basic reference checks are also logged to
+the browser console while you play `dev.html`. There's a ready-to-copy card file at
+[docs/card-template.js](card-template.js).
 
 ## Cards
 

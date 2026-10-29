@@ -16,6 +16,7 @@ export default [
   },
   // Node scripts: the build, the tests and the balance report.
   { files: ['*.mjs', 'tests/**/*.mjs', 'scripts/**/*.mjs'], languageOptions: { globals: { ...globals.node } } },
-  // Code the tests run inside the page, where main.js defines window.reigns.
-  { files: ['tests/**/*.mjs'], languageOptions: { globals: { reigns: 'readonly' } } },
+  // Code the tests run inside the page, where main.js defines window.reigns (and the
+  // validator page, window.validator).
+  { files: ['tests/**/*.mjs'], languageOptions: { globals: { reigns: 'readonly', validator: 'readonly' } } },
 ];

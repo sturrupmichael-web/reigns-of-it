@@ -37,5 +37,6 @@ jobs:
       - if: steps.pw-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
       - run: npm run lint
+      - run: npm run validate
       - run: npm run build
       - run: npm test
