@@ -131,4 +131,10 @@ export const CHARACTERS = {
     bio: 'Ran IT for the company you just bought, alone, for nine years. Knows where the Ohio closet is.',
     portrait: { bg: '#90be6d', skin: '#f3d3bd', hair: 'ponytail', hairColor: '#e9c46a', shirt: '#2a9d8f', extras: ['glasses', 'lanyard'], mouth: 'smile' },
   },
+  ex_director: {
+    name: 'The Last IT Director',
+    title: 'A note left in your desk drawer',
+    bio: 'Unlocked after ten runs. Lasted longer than most. Never explains how.',
+    portrait: { bg: '#495057', skin: '#d9b39a', hair: 'balding', hairColor: '#6c757d', shirt: '#343a40', extras: ['glasses', 'lanyard'], mouth: 'frown' },
+  },
 };

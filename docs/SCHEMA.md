@@ -188,6 +188,48 @@ eight of those must exist. Any other id is a special ending, triggered by a choi
 
 The game over screen counts how many of all the endings the player has found.
 
+## Achievements
+
+`data/achievements.js`. Each one has an `id`, `icon`, `title`, `text` (how to get it),
+an optional `unlocks` (what it adds to later runs, shown in the gallery), and `when`.
+`when` takes any card condition (`requires`, `counters`, `tenure`, ...), checked after
+every swipe, plus a few checked when a run ends:
+
+| Field | Means |
+|---|---|
+| `ending: 'ai_ending'` | the run ended with this ending |
+| `specialEnding: true` | the run ended with a story ending, not a meter |
+| `quick: 8` | the run ended within this many weeks |
+| `runs: 10` | this many runs finished in total |
+| `endingsFound: 12` | this many different endings found in total |
+| `allMeterEndings: true` | all eight meter endings found |
+
+```js
+{
+  id: 'said_no_ceo',
+  icon: '🙅',
+  title: 'Said No to the CEO and Lived',
+  text: 'Push back on the CEO, then last another half year.',
+  unlocks: 'The CEO starts asking your opinion.',
+  when: { counters: { ceo_no: { min: 1 } }, tenure: { min: 26 } },
+},
+```
+
+To make a choice count toward one, give it a flag or counter (`add: { ceo_no: 1 }`).
+
+### Unlocking cards in later runs
+
+Every unlocked achievement sets the flag `ach_<id>` at the start of each run after it.
+A card that needs it is a legacy card (`data/cards/legacy.js`):
+`conditions: { requires: ['ach_said_no_ceo'] }`. The tests check that every achievement
+with `unlocks` has at least one card behind it.
+
+## Director names
+
+Every run is "IT Director #N", numbered across all runs, with a name built from the
+lists in `data/directors.js` (first names, last names, and nicknames for about a third
+of them). Add to the lists freely.
+
 ## Config
 
 `data/config.js` has the meter list (key, icon, label) and the tuning numbers: starting
@@ -237,3 +279,4 @@ give the cheap side of some cards a small gain.
 | `office.js` | standalone everyday cards, plus grudge and reward cards for the cast |
 | `seasonal.js` | cards tied to the time of year (tax phishing, interns, budget season, change freeze) |
 | `merger.js`, `ransomware.js`, `cloud.js`, `audit.js`, `ai.js` | the five story arcs |
+| `legacy.js` | cards unlocked by achievements from earlier runs |

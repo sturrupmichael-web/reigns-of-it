@@ -7,6 +7,8 @@ import { CONFIG, METERS } from '../data/config.js';
 import { CHARACTERS } from '../data/characters.js';
 import { ENDINGS } from '../data/endings.js';
 import { ALL_CARDS } from '../data/cards/index.js';
+import { ACHIEVEMENTS } from '../data/achievements.js';
+import { FIRST_NAMES, LAST_NAMES, NICKNAMES } from '../data/directors.js';
 import { followUpsOf } from './engine/state.js';
 
 export const METER_KEYS = METERS.map((m) => m.key);
@@ -38,7 +40,8 @@ function load() {
   }
   // A flag or counter that a condition checks but no choice ever sets is almost
   // always a typo, and the card behind it can never (or always) appear.
-  const set = new Set();
+  // Unlocked achievements set `ach_<id>` at the start of a run.
+  const set = new Set(ACHIEVEMENTS.map((a) => `ach_${a.id}`));
   for (const card of Object.values(cardById)) {
     for (const side of ['left', 'right']) for (const k of [...Object.keys(card[side]?.flags ?? {}), ...Object.keys(card[side]?.add ?? {})]) set.add(k);
   }
@@ -52,6 +55,18 @@ function load() {
   for (const k of METER_KEYS) {
     for (const end of ['min', 'max']) if (!ENDINGS[`${k}_${end}`]) problems.push(`missing ending "${k}_${end}"`);
   }
+  const achievementIds = new Set();
+  for (const a of ACHIEVEMENTS) {
+    if (!a?.id || achievementIds.has(a.id)) problems.push(`achievement "${a?.id}": missing or duplicate id`);
+    achievementIds.add(a?.id);
+    if (!a?.title || !a?.when) problems.push(`achievement "${a?.id}": needs a title and a "when"`);
+    const w = a?.when ?? {};
+    if (w.ending && !ENDINGS[w.ending]) problems.push(`achievement "${a.id}": unknown ending "${w.ending}"`);
+    if (w.endingsFound > Object.keys(ENDINGS).length) problems.push(`achievement "${a.id}": asks for ${w.endingsFound} endings, but there are only ${Object.keys(ENDINGS).length}`);
+    for (const k of [...(w.requires ?? []), ...(w.excludes ?? []), ...Object.keys(w.counters ?? {})]) {
+      if (!set.has(k)) problems.push(`achievement "${a.id}": checks flag "${k}", which no choice sets`);
+    }
+  }
   for (const p of problems) console.warn(`[Reigns of IT] ${p}`);
 
   const characters = {};
@@ -59,7 +74,17 @@ function load() {
   const endings = {};
   for (const [id, e] of Object.entries(ENDINGS)) endings[id] = { id, ...e };
 
-  return { config: CONFIG, meters: METERS, characters, endings, cards: Object.values(cardById), cardById, problems };
+  return {
+    config: CONFIG,
+    meters: METERS,
+    characters,
+    endings,
+    cards: Object.values(cardById),
+    cardById,
+    achievements: ACHIEVEMENTS,
+    names: { first: FIRST_NAMES, last: LAST_NAMES, nick: NICKNAMES },
+    problems,
+  };
 }
 
 export const CONTENT = load();

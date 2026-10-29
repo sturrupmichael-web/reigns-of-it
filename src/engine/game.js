@@ -1,7 +1,7 @@
 // Game controller: owns the current run and exposes a tiny API to the UI.
 // Still no DOM here; the UI calls these and renders what comes back.
 //
-//   game.start()          begins a new run, returns the first card
+//   game.start(options)   begins a new run, returns the first card
 //   game.state / .card    the current run and card
 //   game.choose('left')   applies the choice, returns { before, after, ending, next }
 //   game.snapshot()       the run as JSON-safe data, for saving
@@ -20,8 +20,9 @@ export function createGame(rng = Math.random) {
     state: null,
     card: null,
 
-    start() {
-      game.state = newRun();
+    // options: { unlocked, director }, see newRun().
+    start(options) {
+      game.state = newRun(options);
       game.card = drawCard(game.state, rng);
       return game.card;
     },

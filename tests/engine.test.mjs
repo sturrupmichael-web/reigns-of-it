@@ -7,6 +7,7 @@ import { CONTENT, METER_KEYS } from '../src/content.js';
 import { newRun, applyChoice, calendar } from '../src/engine/state.js';
 import { drawCard, conditionsMet } from '../src/engine/deck.js';
 import { createGame } from '../src/engine/game.js';
+import { achievementMet, newAchievements, directorName } from '../src/engine/achievements.js';
 
 // A repeatable random number generator, so a failing run can be replayed.
 function seeded(seed) {
@@ -124,6 +125,39 @@ export const tests = [
     assert(clean === 'audit_clean', `clean run got ${clean}`);
     const messy = auditCards((s) => { s.flags.sales_vp_admin = true; s.flags.security_debt = 4; });
     assert(messy === 'audit_debt,audit_sales_admin', `messy run got ${messy}`);
+  }],
+
+  ['achievements unlock on their conditions, and the run-end ones only at the end', async () => {
+    const a = (id) => CONTENT.achievements.find((x) => x.id === id);
+    const state = newRun();
+    state.turn = 13;
+    assert(achievementMet(a('probation'), state), 'probation not met at week 13');
+    assert(!achievementMet(a('speedrun'), state), 'speedrun met mid-run');
+    state.turn = 5;
+    assert(achievementMet(a('speedrun'), state, 'budget_min', { runs: 1, endings: { budget_min: 1 } }), 'speedrun not met');
+    assert(!achievementMet(a('off_script'), state, 'budget_min', { runs: 1, endings: {} }), 'a meter ending counted as a story ending');
+    assert(achievementMet(a('off_script'), state, 'cfo_takeover', { runs: 1, endings: {} }), 'story ending not counted');
+    const all = Object.fromEntries(METER_KEYS.flatMap((k) => [[`${k}_min`, 1], [`${k}_max`, 1]]));
+    assert(achievementMet(a('every_way_out'), state, 'budget_min', { runs: 8, endings: all }), 'all eight endings not counted');
+    const fresh = newAchievements({}, state, 'budget_min', { runs: 10, endings: { budget_min: 1 } });
+    assert(fresh.includes('revolving_door') && fresh.includes('speedrun'), fresh.join(','));
+    assert(!newAchievements({ speedrun: true }, state, 'budget_min', { runs: 1, endings: {} }).includes('speedrun'), 'an unlocked achievement came back');
+  }],
+
+  ['unlocked achievements carry into the next run and unlock legacy cards', async () => {
+    const card = CONTENT.cardById.ex_director_note;
+    const plain = newRun();
+    plain.turn = 5;
+    assert(!conditionsMet(card, plain), 'legacy card available without the achievement');
+    const veteran = newRun({ unlocked: { revolving_door: true }, director: { number: 11, name: 'Pat Nguyen' } });
+    veteran.turn = 5;
+    assert(veteran.flags.ach_revolving_door === true && veteran.director.number === 11, JSON.stringify(veteran));
+    assert(conditionsMet(card, veteran), 'legacy card still locked');
+    for (const a of CONTENT.achievements.filter((x) => x.unlocks)) {
+      assert(CONTENT.cards.some((c) => c.conditions?.requires?.includes(`ach_${a.id}`)), `${a.id} says it unlocks something, but no card needs it`);
+    }
+    const name = directorName(seeded(3));
+    assert(typeof name === 'string' && name.split(' ').length >= 2, name);
   }],
 
   ['a saved run resumes exactly where it was, and bad saves are ignored', async () => {

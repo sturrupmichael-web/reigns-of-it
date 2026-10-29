@@ -19,8 +19,10 @@
     <header class="hud">
       <div class="meters" id="meters" aria-label="Meters"></div>
       <div class="status">
+        <button class="icon-btn" id="btn-menu" type="button" aria-label="Menu"><span aria-hidden="true">☰</span></button>
         <span class="best" id="best"></span>
         <span class="clock" id="clock">Year 1, Week 1</span>
+        <button class="icon-btn" id="btn-mute" type="button" aria-label="Sound" aria-pressed="true"><span aria-hidden="true">🔊</span></button>
       </div>
     </header>
 
@@ -50,15 +52,57 @@
     </footer>
   </div>
 
+  <div class="banner" id="banner" hidden aria-live="polite">
+    <span class="banner-icon" id="banner-icon" aria-hidden="true"></span>
+    <span class="banner-body"><small>Achievement unlocked</small><b id="banner-title"></b></span>
+  </div>
+
+  <div class="overlay title-screen" id="title" hidden role="dialog" aria-modal="true" aria-labelledby="title-name">
+    <div class="overlay-panel">
+      <div class="title-logo" aria-hidden="true">
+        <span class="title-card back"></span>
+        <span class="title-card front">👔</span>
+      </div>
+      <h1 class="title-name" id="title-name">Reigns of IT</h1>
+      <p class="title-tag">Swipe left or right. Keep the budget, security, users and your CIO in balance. Nobody lasts forever.</p>
+      <p class="title-director" id="title-director"></p>
+      <button class="primary-btn" id="btn-play" type="button">Start</button>
+      <button class="link-btn" id="btn-new" type="button" hidden>Start over with a new director</button>
+      <div class="title-links">
+        <button class="secondary-btn" id="btn-endings" type="button"><span><span aria-hidden="true">🏁</span> Endings</span> <span class="count" id="count-endings"></span></button>
+        <button class="secondary-btn" id="btn-achievements" type="button"><span><span aria-hidden="true">🏆</span> Achievements</span> <span class="count" id="count-achievements"></span></button>
+      </div>
+      <p class="title-stats" id="title-stats"></p>
+      <div class="settings">
+        <button class="chip" id="set-sound" type="button"></button>
+        <button class="chip" id="set-theme" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="gallery" hidden role="dialog" aria-modal="true" aria-labelledby="gallery-heading">
+    <div class="overlay-panel gallery-panel">
+      <h2 class="visually-hidden" id="gallery-heading">Gallery</h2>
+      <div class="tabs" role="tablist">
+        <button class="tab" id="tab-endings" type="button" role="tab">Endings</button>
+        <button class="tab" id="tab-achievements" type="button" role="tab">Achievements</button>
+      </div>
+      <p class="gallery-sub" id="gallery-sub"></p>
+      <div class="gallery-list" id="gallery-list"></div>
+      <button class="primary-btn" id="btn-gallery-close" type="button">Back</button>
+    </div>
+  </div>
+
   <div class="overlay" id="gameover" hidden role="dialog" aria-modal="true" aria-labelledby="end-title">
     <div class="overlay-panel">
       <div class="end-icon" id="end-icon" aria-hidden="true"></div>
-      <p class="end-kicker">Your tenure has ended</p>
+      <p class="end-kicker" id="end-kicker">Your tenure has ended</p>
       <h1 class="end-title" id="end-title"></h1>
       <p class="end-text" id="end-text"></p>
       <p class="end-stats" id="end-stats"></p>
       <p class="end-record" id="end-record"></p>
       <button class="primary-btn" id="btn-restart" type="button">Hire the next IT Director</button>
+      <button class="link-btn" id="btn-gameover-menu" type="button">Main menu</button>
     </div>
   </div>
 

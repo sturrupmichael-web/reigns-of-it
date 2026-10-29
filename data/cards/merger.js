@@ -15,6 +15,7 @@ export const CARDS = [
       label: 'I need a real plan',
       effects: { patience: -10, budget: -5 },
       flags: { merger_on: true },
+      add: { ceo_no: 1 },
       followUp: { card: 'merger_domains', delay: 2 },
     },
     right: {
@@ -71,7 +72,7 @@ export const CARDS = [
     character: 'ceo',
     text: 'The board hired a transformation consultant to "harmonize" the two companies. His name is Trent. Please be nice to Trent.',
     left: { label: 'Welcome aboard, Trent', effects: { patience: 5, budget: -10 }, flags: { consultant_on: true } },
-    right: { label: 'We don\'t need Trent', effects: { patience: -10, happiness: 5, budget: 5 }, flags: { consultant_on: true }, add: { trent_annoyed: 1 } },
+    right: { label: 'We don\'t need Trent', effects: { patience: -10, happiness: 5, budget: 5 }, flags: { consultant_on: true }, add: { trent_annoyed: 1, ceo_no: 1 } },
     followUpOnly: true,
     once: true,
   },

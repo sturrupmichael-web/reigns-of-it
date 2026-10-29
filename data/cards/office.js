@@ -33,7 +33,7 @@ export const CARDS = [
     id: 'ceo_plane_wifi',
     character: 'ceo',
     text: 'The Wi-Fi on my flight didn\'t work. I was offline for four hours. Please fix it.',
-    left: { label: 'That\'s the airline', effects: { patience: -10, happiness: 5, budget: 5 } },
+    left: { label: 'That\'s the airline', effects: { patience: -10, happiness: 5, budget: 5 }, add: { ceo_no: 1 } },
     right: { label: 'Get her a satellite plan', effects: { budget: -5, patience: 10, happiness: -5 } },
   },
   {
@@ -272,6 +272,20 @@ export const CARDS = [
     left: { label: 'Pizza\'s on me', effects: { budget: -5, happiness: 10 } },
     right: { label: 'The cake was enough', effects: { budget: 5, happiness: -5 }, add: { helpdesk_morale: -1 } },
     conditions: { counters: { helpdesk_morale: { min: 2 } } },
+    once: true,
+  },
+  {
+    id: 'helpdesk_admin_for_all',
+    character: 'helpdesk',
+    text: 'Forty tickets today are "please install this". Hear me out: what if everyone just had admin? I could take lunch.',
+    left: { label: 'Absolutely not', effects: { security: 5, happiness: -10 }, add: { helpdesk_morale: -1 } },
+    right: {
+      label: 'Admin for everyone!',
+      effects: { happiness: 15, security: -15 },
+      flags: { everyone_admin: true },
+      add: { helpdesk_morale: 1, security_debt: 2 },
+    },
+    conditions: { tenure: { min: 8 } },
     once: true,
   },
 ];

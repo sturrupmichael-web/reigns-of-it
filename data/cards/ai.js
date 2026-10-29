@@ -14,6 +14,7 @@ export const CARDS = [
       label: 'A careful policy first',
       effects: { patience: -10, security: 10, budget: 5 },
       flags: { ai_on: true, ai_careful: true },
+      add: { ceo_no: 1 },
       followUp: [{ card: 'ai_chatbot', delay: 2 }, { card: 'ai_policy', delay: 4 }, { card: 'ai_agent_offer', delay: 8 }],
     },
     right: {

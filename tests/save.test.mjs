@@ -2,7 +2,7 @@
 // recorded (best, runs, endings found) and its save cleared, every key carries the
 // reignsOfIT: prefix, and the game still plays when storage is blocked.
 
-import { assert, ready } from './harness.mjs';
+import { assert, ready, startFromTitle } from './harness.mjs';
 
 export const browser = true;
 export const pages = ['dev.html', 'file:index.html'];
@@ -20,6 +20,7 @@ async function playToEnd(page) {
 async function reload(page) {
   await page.reload();
   await page.waitForFunction(() => window.reigns && !document.getElementById('boot'));
+  await startFromTitle(page);
   await ready(page);
 }
 

@@ -8,16 +8,22 @@
 //   recent    ids of the last few cards shown (for the repeat cooldown)
 //   seen      { card_id: times shown }
 //   ended     null, or the ending id once the run is over
+//   director  { number, name }  who's playing this run ("IT Director #14")
 
 import { CONTENT, METER_KEYS } from '../content.js';
 
-export function newRun() {
+// `unlocked` is the achievements from earlier runs ({ id: true }); each one sets the
+// flag `ach_<id>`, so legacy cards can require it.
+export function newRun({ unlocked = {}, director = null } = {}) {
   const cfg = CONTENT.config;
   const meters = {};
   for (const k of METER_KEYS) meters[k] = cfg.startMeters?.[k] ?? 50;
+  const flags = {};
+  for (const id of Object.keys(unlocked)) if (unlocked[id]) flags[`ach_${id}`] = true;
   return {
     meters,
-    flags: {},
+    flags,
+    director,
     turn: 0,
     queue: cfg.startCard ? [{ card: cfg.startCard, due: 0 }] : [],
     recent: [],
