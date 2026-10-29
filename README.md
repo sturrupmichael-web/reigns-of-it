@@ -5,8 +5,9 @@ company, and every card is a request, a crisis or a decision from someone in the
 Swipe left or right to choose. Every choice moves four meters: 💰 Budget, 🛡️ Security,
 🙂 User Happiness and 👔 CIO Patience. Let any of them hit 0 or 100 and your tenure ends.
 
-Phase 1 of 5: the swipe card, the four meters, about fifteen cards and all eight meter
-endings. See [docs/SCHEMA.md](docs/SCHEMA.md) for how cards, characters and endings are
+Phases 1 and 2 of 5: the swipe card, the four meters, about twenty cards, flags,
+counters and follow-ups so characters remember what you did, the week and year clock,
+all eight meter endings plus a special one, saving, and your best score. See [docs/SCHEMA.md](docs/SCHEMA.md) for how cards, characters and endings are
 written.
 
 ```
@@ -48,6 +49,14 @@ and play the deployed copy.
 | Touch or mouse | Drag the card left or right; let go past the edge to choose, or short of it to change your mind. A quick flick works too. |
 | ← / → (or A / D) | Lean the card that way to read the choice; press the same key again (or Enter) to choose. Esc or ↓ straightens it. |
 | The ← / → buttons | With a mouse, hover to read the choice and click to choose. On a touch screen, tap once to read and again to choose. |
+
+## Saving
+
+The run in progress is saved after every swipe, so closing the tab or reloading picks
+up on the same card. Finished runs update your best score, the number of runs and the
+endings you've found. Everything is in `localStorage` under keys starting with
+`reignsOfIT:`, so it can't collide with the other games on the site. If storage is
+blocked (some private windows), the game still plays; it just doesn't remember.
 
 ## Tests
 

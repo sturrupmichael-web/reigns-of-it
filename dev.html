@@ -19,6 +19,7 @@
     <header class="hud">
       <div class="meters" id="meters" aria-label="Meters"></div>
       <div class="status">
+        <span class="best" id="best"></span>
         <span class="clock" id="clock">Year 1, Week 1</span>
       </div>
     </header>
@@ -27,6 +28,7 @@
       <p class="prompt" id="prompt" aria-live="polite"></p>
 
       <div class="card-area">
+        <div class="toast" id="toast" aria-live="polite" hidden></div>
         <div class="card-deck" aria-hidden="true"></div>
         <div class="card" id="card" aria-roledescription="swipe card">
           <div class="card-face" id="card-face"></div>
@@ -55,6 +57,7 @@
       <h1 class="end-title" id="end-title"></h1>
       <p class="end-text" id="end-text"></p>
       <p class="end-stats" id="end-stats"></p>
+      <p class="end-record" id="end-record"></p>
       <button class="primary-btn" id="btn-restart" type="button">Hire the next IT Director</button>
     </div>
   </div>

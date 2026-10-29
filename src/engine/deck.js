@@ -25,6 +25,11 @@ export function conditionsMet(card, state) {
     const inWindow = from <= to ? cal.week >= from && cal.week <= to : cal.week >= from || cal.week <= to;
     if (!inWindow) return false;
   }
+  for (const [k, r] of Object.entries(c.counters ?? {})) {
+    const v = Number(state.flags[k]) || 0;
+    if (r.min != null && v < r.min) return false;
+    if (r.max != null && v > r.max) return false;
+  }
   for (const [k, r] of Object.entries(c.meters ?? {})) {
     const v = state.meters[k];
     if (r.min != null && v < r.min) return false;

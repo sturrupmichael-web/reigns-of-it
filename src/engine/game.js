@@ -4,10 +4,16 @@
 //   game.start()          begins a new run, returns the first card
 //   game.state / .card    the current run and card
 //   game.choose('left')   applies the choice, returns { before, after, ending, next }
+//   game.snapshot()       the run as JSON-safe data, for saving
+//   game.resume(saved)    continues a saved run
 
-import { CONTENT } from '../content.js';
+import { CONTENT, METER_KEYS } from '../content.js';
 import { newRun, applyChoice } from './state.js';
 import { drawCard } from './deck.js';
+
+// Bump when the shape of the run state changes, so old saves are ignored
+// instead of half-loaded.
+const SAVE_VERSION = 1;
 
 export function createGame(rng = Math.random) {
   const game = {
@@ -33,6 +39,28 @@ export function createGame(rng = Math.random) {
       }
       result.next = game.card;
       return result;
+    },
+
+    // A JSON-safe copy of the run in progress, for saving. null once it's over.
+    snapshot() {
+      if (!game.state || !game.card || game.state.ended) return null;
+      return { v: SAVE_VERSION, state: game.state, card: game.card.id };
+    },
+
+    // Picks a saved run back up. Returns the current card, or null (and
+    // changes nothing) if the save is from an older version, is damaged, or
+    // names a card that no longer exists.
+    resume(saved) {
+      if (!saved || saved.v !== SAVE_VERSION) return null;
+      const card = CONTENT.cardById[saved.card];
+      const s = saved.state;
+      const valid = card && s && !s.ended && Number.isInteger(s.turn) &&
+        METER_KEYS.every((k) => typeof s.meters?.[k] === 'number') &&
+        Array.isArray(s.queue) && Array.isArray(s.recent) && s.flags && s.seen;
+      if (!valid) return null;
+      game.state = s;
+      game.card = card;
+      return card;
     },
   };
   return game;

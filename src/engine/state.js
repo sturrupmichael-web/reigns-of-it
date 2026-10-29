@@ -1,8 +1,8 @@
 // Run state and the rules for applying a choice. No DOM in here.
 //
-// A run's state is a plain object so it can be saved as JSON later (Phase 2):
+// A run's state is a plain object, saved as JSON after every swipe (src/save.js):
 //   meters    { budget, security, happiness, patience }  0-100
-//   flags     { flag_name: value }  set by card choices
+//   flags     { flag_name: value }  set by card choices (`flags`, and `add` for counters)
 //   turn      swipes made so far (0 on the first card)
 //   queue     [{ card, due }]  follow-up cards waiting for turn `due`
 //   recent    ids of the last few cards shown (for the repeat cooldown)
@@ -58,6 +58,9 @@ export function applyChoice(state, card, side) {
     if (k in state.meters) state.meters[k] = clamp(state.meters[k] + d);
   }
   if (choice.flags) Object.assign(state.flags, choice.flags);
+  // Counters: numbers added to a flag (a missing one counts as 0), for things
+  // that build up, like a grudge or a favor owed.
+  for (const [k, n] of Object.entries(choice.add ?? {})) state.flags[k] = (Number(state.flags[k]) || 0) + n;
 
   // Queue the follow-up. delay 0 (or a bare id) means "next card".
   if (choice.followUp) {

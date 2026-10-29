@@ -9,6 +9,7 @@ import { mountCard, renderCard, dragCard, flyOff, enterCard, cardWidth } from '.
 import { bindInput } from './ui/swipe.js';
 import { mountScreens, showGameOver } from './ui/screens.js';
 import { sfx } from './audio/sfx.js';
+import { loadRun, saveRun, clearRun, loadStats, recordRun } from './save.js';
 
 const $ = (id) => document.getElementById(id);
 const game = createGame();
@@ -28,6 +29,24 @@ function showPreview(side) {
 function updateClock() {
   const cal = calendar(game.state.turn);
   $('clock').textContent = `Year ${cal.year}, Week ${cal.week}`;
+}
+
+function updateBest() {
+  const { bestWeeks } = loadStats();
+  $('best').textContent = bestWeeks ? `Best: ${bestWeeks} ${bestWeeks === 1 ? 'week' : 'weeks'}` : '';
+}
+
+// A short banner over the card, e.g. at the start of each new year.
+let toastTimer = 0;
+function toast(text) {
+  const el = $('toast');
+  el.textContent = text;
+  el.hidden = false;
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 1800);
 }
 
 const controller = {
@@ -64,22 +83,33 @@ const controller = {
     const result = game.choose(side);
     setMeters(result.after, true);
     sfx.tick();
+    // Save straight away, so closing the tab mid-animation loses nothing.
+    let record = null;
+    if (result.ending) {
+      clearRun();
+      record = recordRun(result.ending, game.state.turn);
+    } else {
+      saveRun(game.snapshot());
+    }
 
     flyOff(side).then(() => {
       if (result.ending) {
         sfx.sting();
-        showGameOver(result.ending, game.state);
+        updateBest();
+        showGameOver(result.ending, game.state, record);
         return;
       }
       updateClock();
+      const cal = calendar(game.state.turn);
+      if (cal.week === 1) toast(`Year ${cal.year}`);
       renderCard(result.next);
       return enterCard().then(() => { locked = false; });
     });
   },
 };
 
-function newRun() {
-  const card = game.start();
+// Shows the run in game.state / game.card, fresh or resumed.
+function showRun(card) {
   setMeters(game.state.meters, false);
   previewMeters(null);
   updateClock();
@@ -87,6 +117,12 @@ function newRun() {
   renderCard(card);
   locked = true;
   enterCard().then(() => { locked = false; });
+}
+
+function newRun() {
+  const card = game.start();
+  saveRun(game.snapshot());
+  showRun(card);
 }
 
 mountMeters($('meters'));
@@ -108,10 +144,15 @@ mountScreens({
   title: $('end-title'),
   text: $('end-text'),
   stats: $('end-stats'),
+  record: $('end-record'),
   restartBtn: $('btn-restart'),
 }, newRun);
 
-newRun();
+updateBest();
+// Pick up where the player left off, if there's a run in progress.
+const resumed = game.resume(loadRun());
+if (resumed) showRun(resumed);
+else newRun();
 $('boot')?.remove();
 
 // For the tests and the browser console: reigns.game.state, reigns.content, reigns.choose('left').
