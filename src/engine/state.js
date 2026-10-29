@@ -48,6 +48,15 @@ export function meterEnding(meters) {
   return null;
 }
 
+// A choice's `followUp` as a list of { card, delay }. It can be a card id, one
+// { card, delay }, or a list of either (for branches: each one is checked
+// against its card's conditions when it comes due, and the ones that fail are
+// dropped).
+export function followUpsOf(choice) {
+  const list = Array.isArray(choice?.followUp) ? choice.followUp : choice?.followUp ? [choice.followUp] : [];
+  return list.map((fu) => (typeof fu === 'string' ? { card: fu, delay: 0 } : { card: fu.card, delay: fu.delay || 0 }));
+}
+
 // Apply one side of a card to the state (mutates it).
 // Returns { before, after, ending } where ending is an ending id or null.
 export function applyChoice(state, card, side) {
@@ -62,11 +71,8 @@ export function applyChoice(state, card, side) {
   // that build up, like a grudge or a favor owed.
   for (const [k, n] of Object.entries(choice.add ?? {})) state.flags[k] = (Number(state.flags[k]) || 0) + n;
 
-  // Queue the follow-up. delay 0 (or a bare id) means "next card".
-  if (choice.followUp) {
-    const fu = typeof choice.followUp === 'string' ? { card: choice.followUp, delay: 0 } : choice.followUp;
-    state.queue.push({ card: fu.card, due: state.turn + 1 + (fu.delay || 0) });
-  }
+  // Queue the follow-ups. delay 0 (or a bare id) means "next card".
+  for (const fu of followUpsOf(choice)) state.queue.push({ card: fu.card, due: state.turn + 1 + fu.delay });
 
   state.turn += 1;
   state.ended = choice.ending || meterEnding(state.meters) || null;

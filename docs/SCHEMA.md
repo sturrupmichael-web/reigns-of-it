@@ -62,7 +62,7 @@ browser console while you play `dev.html`.
 | `effects` | How much each meter moves: any of `budget`, `security`, `happiness`, `patience`. Leave out a meter to leave it alone. Before the player commits, every meter in here shows a dot: small for 1-6, medium for 7-12, large for 13+ (set in `config.js`). The dot never says which direction. |
 | `flags` | Optional. Things to remember for the rest of the run: `{ name: value }`. Use `true` to set and `false` to clear. Any value works; conditions treat anything except `false`, `0`, `''`, `null` and `undefined` as set. |
 | `add` | Optional. Adds to counters: `{ cfo_grudge: 1 }`, or a negative number to take away. A counter starts at 0. Use counters for things that build up over a run, like a grudge, a favor owed, or how many shortcuts you've taken. |
-| `followUp` | Optional. A card to show later, by id. `'card_id'` (or `{ card: 'card_id', delay: 0 }`) shows it next. `{ card: 'card_id', delay: 3 }` shows it after three other cards, i.e. three weeks later. |
+| `followUp` | Optional. A card to show later, by id. `'card_id'` (or `{ card: 'card_id', delay: 0 }`) shows it next. `{ card: 'card_id', delay: 3 }` shows it after three other cards, i.e. three weeks later. A list, like `[{ card: 'a', delay: 2 }, { card: 'b', delay: 6 }]`, queues several at once; this is how an arc lays out its beats. |
 | `ending` | Optional. End the run right now with this ending id (a key from `data/endings.js`), for special story endings. |
 
 Effects are added to the meters and clamped to 0-100. Most effects should be 5-15;
@@ -87,6 +87,7 @@ All the parts you include must be true for the card to be eligible.
 | `requires: ['flag_a', 'flag_b']` | every one of these flags is set |
 | `excludes: ['flag_c']` | none of these flags are set |
 | `minYear: 2`, `maxYear: 5` | the year of your tenure (Year 1 is the first 52 weeks) |
+| `tenure: { min: 10, max: 60 }` | how many weeks you've survived so far. Use it to hold big arcs back until the player has settled in. |
 | `weeks: [40, 52]` | the week of the year, 1-52, for seasonal cards. A window that wraps, like `[50, 4]`, covers late December to January. |
 | `meters: { budget: { max: 30 }, security: { min: 60 } }` | meter ranges, e.g. only when money is tight |
 | `counters: { cfo_grudge: { min: 2 } }` | counter ranges (a counter that was never added to is 0) |
@@ -105,6 +106,25 @@ Follow-ups skip the random draw but still check their conditions when their turn
 If the conditions fail then (say the player cleared the flag in the meantime), the
 follow-up is quietly dropped. That's how the crypto miner card only arrives if the Sales
 VP still has admin.
+
+Branching arcs use this. A choice queues every possible next beat, and each beat's
+conditions decide which ones actually show. When the auditor arrives, it queues a finding
+for the Sales VP's admin rights, one for Gary's server, one for a pile of security debt
+and a clean bill of health; you only see the findings you earned.
+
+### Arcs and shared counters
+
+| Arc | File | Starts | What carries in |
+|---|---|---|---|
+| The Merger | `merger.js` | after 10 weeks | the consultant Trent and the acquired IT lead Bea join the cast |
+| Ransomware Scare | `ransomware.js` | after 16 weeks, with 2+ security debt | how bad it gets depends on `security_debt` and `backups_trimmed`; hiring the CISO unlocks Morgan |
+| Cloud Migration | `cloud.js` | weeks 1-26, after 6 weeks | lift-and-shift vs re-architect picks the bill you get |
+| The Audit | `audit.js` | weeks 34-44 (audit season) | finds `sales_vp_admin`, `gary_undocumented` and `security_debt` |
+| AI Everything | `ai.js` | after 12 weeks | careful vs all-in changes the beats; the agent pilot can replace you |
+
+`security_debt` is the thread that ties them together: most shortcuts in the game add 1
+to it ("skip patching", "lock it quietly", "just this once"), and the Ransomware and
+Audit arcs read it back.
 
 ### How the next card is picked
 
@@ -197,4 +217,23 @@ start card, the repeat cooldown and the dot sizes.
    export const ALL_CARDS = [...STARTER, ...MERGER];
    ```
 
-3. Run `npm test`.
+3. Run `npm test`, then `npm run balance` to see how often each card turns up and
+   which endings players hit (below).
+
+## Balance
+
+`npm run balance` plays a few thousand runs with two bots, one that swipes at random and
+one that keeps the meters near the middle, and prints the total push on each meter, how
+many weeks runs last, how often each ending comes up, and any card that never appeared.
+A healthy spread has every meter ending in the mix, random runs lasting around 20 weeks,
+and every card seen. If one meter dominates the endings, soften that meter's costs or
+give the cheap side of some cards a small gain.
+
+## Card files
+
+| File | What's in it |
+|---|---|
+| `starter.js` | the first cards: the CIO's welcome, the Sales VP's admin rights, the CFO's grudge |
+| `office.js` | standalone everyday cards, plus grudge and reward cards for the cast |
+| `seasonal.js` | cards tied to the time of year (tax phishing, interns, budget season, change freeze) |
+| `merger.js`, `ransomware.js`, `cloud.js`, `audit.js`, `ai.js` | the five story arcs |

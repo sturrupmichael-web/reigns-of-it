@@ -14,8 +14,8 @@ export default [
       'no-unused-vars': ['error', { args: 'none', ignoreRestSiblings: true }],
     },
   },
-  // Node scripts: the build and the tests.
-  { files: ['*.mjs', 'tests/**/*.mjs'], languageOptions: { globals: { ...globals.node } } },
+  // Node scripts: the build, the tests and the balance report.
+  { files: ['*.mjs', 'tests/**/*.mjs', 'scripts/**/*.mjs'], languageOptions: { globals: { ...globals.node } } },
   // Code the tests run inside the page, where main.js defines window.reigns.
   { files: ['tests/**/*.mjs'], languageOptions: { globals: { reigns: 'readonly' } } },
 ];
