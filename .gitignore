@@ -1,4 +1,5 @@
 node_modules/
 # Built by `npm run build` (GitHub Actions builds its own copy).
 /index.html
+/validator.html
 _site/

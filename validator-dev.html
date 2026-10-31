@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reigns of IT card validator</title>
+  <meta name="description" content="Checks the Reigns of IT cards, characters, endings and achievements for mistakes, and shows meter balance.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect x=%2218%22 y=%2210%22 width=%2264%22 height=%2280%22 rx=%2210%22 fill=%22%231f2433%22/%3E%3Ctext x=%2250%22 y=%2266%22 font-size=%2244%22 text-anchor=%22middle%22%3E%E2%9C%85%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="src/tools/validator.css">
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>Card validator</h1>
+        <p class="sub">Checks every card, character, ending and achievement in this copy of Reigns of IT, and shows how the meters balance.</p>
+      </div>
+      <a class="back" href="index.html">← Play the game</a>
+    </header>
+
+    <section class="tiles" id="tiles" aria-label="Summary"></section>
+
+    <section class="panel" aria-labelledby="h-errors">
+      <h2 id="h-errors">Errors <span class="count" id="n-errors"></span></h2>
+      <p class="hint">Things that break the game: a broken reference, a missing field, a misspelled field name.</p>
+      <ul class="issues" id="errors"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="h-warnings">
+      <h2 id="h-warnings">Warnings <span class="count" id="n-warnings"></span></h2>
+      <p class="hint">Things that probably aren't what you meant: a card that can never appear, a long label, a choice with no cost.</p>
+      <ul class="issues" id="warnings"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="h-balance">
+      <h2 id="h-balance">Meter balance</h2>
+      <p class="hint">Every choice's effects added up. A big net push one way means that meter tends to drift and end runs.</p>
+      <div class="balance" id="balance"></div>
+      <p class="hint" id="touches"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-sim">
+      <h2 id="h-sim">Simulated runs</h2>
+      <p class="hint">Plays the game with two bots: one swipes at random, one keeps the meters near the middle. Every achievement counts as unlocked, so legacy cards are included.</p>
+      <button class="btn" id="btn-sim" type="button">Play 500 runs per bot</button>
+      <div class="sim" id="sim"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-chars">
+      <h2 id="h-chars">Cards per character</h2>
+      <div class="chars" id="chars"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-cards">
+      <h2 id="h-cards">All cards</h2>
+      <input class="search" id="search" type="search" placeholder="Filter by id, character, text or flag" aria-label="Filter cards">
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <div id="boot">Loading...</div>
+  <script>
+    addEventListener('error', (e) => {
+      const b = document.getElementById('boot');
+      if (b) b.textContent = 'The validator failed to load: ' + (e.message || 'unknown error');
+    }, true);
+  </script>
+  <script type="module" src="src/tools/validator-page.js"></script>
+</body>
+</html>

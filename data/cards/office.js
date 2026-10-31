@@ -189,7 +189,7 @@ export const CARDS = [
     id: 'dev_prod_access',
     character: 'dev_lead',
     text: 'Production is down. I could fix it in five minutes with prod access. I\'ve been asking for a year. The year is now relevant.',
-    left: { label: 'Get on a call, I\'ll drive', effects: { happiness: -5, patience: -5, security: 5 }, add: { raj_grudge: 1 } },
+    left: { label: 'Screen-share, I\'ll drive', effects: { happiness: -5, patience: -5, security: 5 }, add: { raj_grudge: 1 } },
     right: { label: 'Here are the keys', effects: { happiness: 10, security: -10 }, add: { security_debt: 1 } },
   },
   {

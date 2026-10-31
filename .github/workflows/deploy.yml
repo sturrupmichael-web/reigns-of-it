@@ -33,7 +33,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: mkdir _site && cp index.html _site/ && touch _site/.nojekyll
+      - run: mkdir _site && cp index.html validator.html _site/ && touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
